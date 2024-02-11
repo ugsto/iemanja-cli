@@ -7,6 +7,7 @@ import (
 
 	"log"
 
+	"github.com/thoas/go-funk"
 	iemanja "github.com/ugsto/iemanja-cli/pkg/cmd"
 	iemanjaclient "github.com/ugsto/iemanja-cli/pkg/iemanja_client"
 	"github.com/ugsto/iemanja-cli/utils"
@@ -50,5 +51,5 @@ func launchEditor(filetype string) string {
 }
 
 func parseTags(tagsStr string) []string {
-	return utils.FilterNotEmpty(strings.Split(tagsStr, ","))
+	return funk.Filter(funk.Map(strings.Split(tagsStr, ","), strings.TrimSpace), func(tag string) bool { return tag != "" }).([]string)
 }

@@ -72,6 +72,7 @@ func main() {
 
 	switch ctx.Command() {
 	case "write-post":
+		postwriter.WritePost(client, CLI.WritePost.FileType, CLI.WritePost.ID)
 	case "write-post <id>":
 		postwriter.WritePost(client, CLI.WritePost.FileType, CLI.WritePost.ID)
 	case "list-posts":

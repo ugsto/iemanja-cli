@@ -2,10 +2,14 @@ package third_party
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/ugsto/iemanja-cli/model"
+	"net"
 	"net/http"
+	"strings"
+
+	"github.com/ugsto/iemanja-cli/model"
 )
 
 type ListPostsResponse struct {
@@ -58,9 +62,30 @@ type APIClient struct {
 }
 
 func NewAPIClient(baseURL string) *APIClient {
+	if strings.HasPrefix(baseURL, "unix") {
+		socketPath := strings.TrimPrefix(baseURL, "unix://")
+		return NewUnixApiClient(socketPath)
+	}
+	return NewTcpAPIClient(baseURL)
+}
+
+func NewTcpAPIClient(baseURL string) *APIClient {
 	return &APIClient{
 		client:  &http.Client{},
 		baseURL: baseURL,
+	}
+}
+
+func NewUnixApiClient(unixSocketPath string) *APIClient {
+	return &APIClient{
+		client: &http.Client{
+			Transport: &http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", unixSocketPath)
+				},
+			},
+		},
+		baseURL: "http://unix",
 	}
 }
 

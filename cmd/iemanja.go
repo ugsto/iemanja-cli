@@ -9,6 +9,8 @@ import (
 )
 
 var CLI struct {
+	APIHost string `help:"API host. Can be an HTTP URL or a Unix socket path." default:"unix:///tmp/iemanja.sock"`
+
 	ListPosts struct {
 		Limit  int `short:"l" default:"10" help:"Limit number of posts to retrieve."`
 		Offset int `short:"o" default:"0" help:"Offset for posts retrieval."`

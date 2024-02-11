@@ -10,7 +10,7 @@ import (
 
 func main() {
 	ctx := kong.Parse(&cmd.CLI)
-	client := third_party.NewAPIClient("http://localhost:7029")
+	client := third_party.NewAPIClient(cmd.CLI.APIHost)
 
 	switch ctx.Command() {
 	case "list-posts":

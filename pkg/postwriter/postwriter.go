@@ -23,6 +23,13 @@ func WritePost(client *iemanjaclient.APIClient, filetype string) {
 	iemanja.CreatePost(client, title, content, tags)
 }
 
+func removeLastCharacterIfLineBreak(content string) string {
+	if strings.HasSuffix(content, "\n") {
+		return content[:len(content)-1]
+	}
+	return content
+}
+
 func launchEditor(filetype string) string {
 	editor := os.Getenv("EDITOR")
 	if editor == "" {
@@ -47,7 +54,10 @@ func launchEditor(filetype string) string {
 	if err != nil {
 		log.Fatalf("Error reading temporary file: %v", err)
 	}
-	return string(contentBytes)
+
+	content := removeLastCharacterIfLineBreak(string(contentBytes))
+
+	return content
 }
 
 func parseTags(tagsStr string) []string {

@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -6,8 +6,6 @@ import (
 	"iemanja/utils"
 	"log"
 	"strings"
-
-	"github.com/alecthomas/kong"
 )
 
 var CLI struct {
@@ -60,37 +58,7 @@ var CLI struct {
 	} `cmd:"" help:"Delete a tag."`
 }
 
-func main() {
-	ctx := kong.Parse(&CLI)
-	client := third_party.NewAPIClient("http://localhost:7029")
-
-	switch ctx.Command() {
-	case "list-posts":
-		listPosts(client, CLI.ListPosts.Limit, CLI.ListPosts.Offset)
-	case "create-post":
-		createPost(client, CLI.CreatePost.Title, CLI.CreatePost.Content, CLI.CreatePost.Tags)
-	case "get-post":
-		getPost(client, CLI.GetPost.ID)
-	case "update-post":
-		updatePost(client, CLI.UpdatePost.ID, CLI.UpdatePost.Title, CLI.UpdatePost.Content, CLI.UpdatePost.Tags)
-	case "delete-post":
-		deletePost(client, CLI.DeletePost.ID)
-	case "list-tags":
-		listTags(client, CLI.ListTags.Limit, CLI.ListTags.Offset)
-	case "create-tag":
-		createTag(client, CLI.CreateTag.Name)
-	case "get-tag":
-		getTag(client, CLI.GetTag.Name)
-	case "update-tag":
-		updateTag(client, CLI.UpdateTag.Name, CLI.UpdateTag.NewName)
-	case "delete-tag":
-		deleteTag(client, CLI.DeleteTag.Name)
-	default:
-		fmt.Println("Command not recognized.")
-	}
-}
-
-func listPosts(client *third_party.APIClient, limit, offset int) {
+func ListPosts(client *third_party.APIClient, limit, offset int) {
 	response, err := client.ListPosts(limit, offset)
 	if err != nil {
 		log.Fatalf("Error listing posts: %v", err)
@@ -101,7 +69,7 @@ func listPosts(client *third_party.APIClient, limit, offset int) {
 	}
 }
 
-func createPost(client *third_party.APIClient, title, content string, tags []string) {
+func CreatePost(client *third_party.APIClient, title, content string, tags []string) {
 	post := third_party.NewPostRequest{
 		Title:   title,
 		Content: content,
@@ -114,7 +82,7 @@ func createPost(client *third_party.APIClient, title, content string, tags []str
 	fmt.Printf("Post created successfully:\n\nID: %s,\nTitle: %s\n", response.Post.ID, response.Post.Title)
 }
 
-func getPost(client *third_party.APIClient, id string) {
+func GetPost(client *third_party.APIClient, id string) {
 	response, err := client.GetPost(id)
 	if err != nil {
 		log.Fatalf("Error getting post: %v", err)
@@ -122,7 +90,7 @@ func getPost(client *third_party.APIClient, id string) {
 	fmt.Printf("Post retrieved successfully:\n\nID: %s,\nTitle: %s\nContent: %s\nTags: %s\n", response.Post.ID, response.Post.Title, response.Post.Content, strings.Join(utils.TagsToString(response.Post.Tags), "; "))
 }
 
-func updatePost(client *third_party.APIClient, id, title, content string, tags []string) {
+func UpdatePost(client *third_party.APIClient, id, title, content string, tags []string) {
 	post := third_party.NewPostRequest{
 		Title:   title,
 		Content: content,
@@ -135,7 +103,7 @@ func updatePost(client *third_party.APIClient, id, title, content string, tags [
 	fmt.Printf("Post updated successfully:\n\nID: %s,\nTitle: %s\n", response.Post.ID, response.Post.Title)
 }
 
-func deletePost(client *third_party.APIClient, id string) {
+func DeletePost(client *third_party.APIClient, id string) {
 	err := client.DeletePost(id)
 	if err != nil {
 		log.Fatalf("Error deleting post: %v", err)
@@ -143,7 +111,7 @@ func deletePost(client *third_party.APIClient, id string) {
 	fmt.Printf("Post deleted successfully:\n\nID: %s\n", id)
 }
 
-func listTags(client *third_party.APIClient, limit, offset int) {
+func ListTags(client *third_party.APIClient, limit, offset int) {
 	tags, err := client.ListTags(limit, offset)
 	if err != nil {
 		log.Fatalf("Error listing tags: %v", err)
@@ -154,7 +122,7 @@ func listTags(client *third_party.APIClient, limit, offset int) {
 	}
 }
 
-func createTag(client *third_party.APIClient, name string) {
+func CreateTag(client *third_party.APIClient, name string) {
 	tag := third_party.NewTagRequest{Name: name}
 	response, err := client.CreateTag(tag)
 	if err != nil {
@@ -163,7 +131,7 @@ func createTag(client *third_party.APIClient, name string) {
 	fmt.Printf("Tag created successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
 }
 
-func getTag(client *third_party.APIClient, id string) {
+func GetTag(client *third_party.APIClient, id string) {
 	response, err := client.GetTag(id)
 	if err != nil {
 		log.Fatalf("Error getting tag: %v", err)
@@ -171,7 +139,7 @@ func getTag(client *third_party.APIClient, id string) {
 	fmt.Printf("Tag retrieved successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
 }
 
-func updateTag(client *third_party.APIClient, id, name string) {
+func UpdateTag(client *third_party.APIClient, id, name string) {
 	tag := third_party.NewTagRequest{Name: name}
 	response, err := client.UpdateTag(id, tag)
 	if err != nil {
@@ -180,7 +148,7 @@ func updateTag(client *third_party.APIClient, id, name string) {
 	fmt.Printf("Tag updated successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
 }
 
-func deleteTag(client *third_party.APIClient, id string) {
+func DeleteTag(client *third_party.APIClient, id string) {
 	err := client.DeleteTag(id)
 	if err != nil {
 		log.Fatalf("Error deleting tag: %v", err)

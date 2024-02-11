@@ -58,10 +58,10 @@ func UpdateTag(client *iemanjaclient.APIClient, id, name string) {
 	fmt.Printf("Tag updated successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
 }
 
-func DeleteTag(client *iemanjaclient.APIClient, id string) {
-	err := client.DeleteTag(id)
+func DeleteTag(client *iemanjaclient.APIClient, name string) {
+	err := client.DeleteTag(name)
 	if err != nil {
 		log.Fatalf("Error deleting tag: %v", err)
 	}
-	fmt.Printf("Tag deleted successfully:\n\nID: %s\n", id)
+	fmt.Printf("Tag deleted successfully:\n\nName: %s\n", name)
 }

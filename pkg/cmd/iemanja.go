@@ -5,11 +5,11 @@ import (
 	"log"
 	"strings"
 
-	"github.com/ugsto/iemanja-cli/third_party"
+	iemanjaclient "github.com/ugsto/iemanja-cli/pkg/iemanja_client"
 	"github.com/ugsto/iemanja-cli/utils"
 )
 
-func ListPosts(client *third_party.APIClient, limit, offset int) {
+func ListPosts(client *iemanjaclient.APIClient, limit, offset int) {
 	response, err := client.ListPosts(limit, offset)
 	if err != nil {
 		log.Fatalf("Error listing posts: %v", err)
@@ -20,8 +20,8 @@ func ListPosts(client *third_party.APIClient, limit, offset int) {
 	}
 }
 
-func CreatePost(client *third_party.APIClient, title, content string, tags []string) {
-	post := third_party.NewPostRequest{
+func CreatePost(client *iemanjaclient.APIClient, title, content string, tags []string) {
+	post := iemanjaclient.NewPostRequest{
 		Title:   title,
 		Content: content,
 		Tags:    tags,
@@ -33,7 +33,7 @@ func CreatePost(client *third_party.APIClient, title, content string, tags []str
 	fmt.Printf("Post created successfully:\n\nID: %s,\nTitle: %s\n", response.Post.ID, response.Post.Title)
 }
 
-func GetPost(client *third_party.APIClient, id string) {
+func GetPost(client *iemanjaclient.APIClient, id string) {
 	response, err := client.GetPost(id)
 	if err != nil {
 		log.Fatalf("Error getting post: %v", err)
@@ -41,8 +41,8 @@ func GetPost(client *third_party.APIClient, id string) {
 	fmt.Printf("Post retrieved successfully:\n\nID: %s,\nTitle: %s\nContent: %s\nTags: %s\n", response.Post.ID, response.Post.Title, response.Post.Content, strings.Join(utils.TagsToString(response.Post.Tags), "; "))
 }
 
-func UpdatePost(client *third_party.APIClient, id, title, content string, tags []string) {
-	post := third_party.NewPostRequest{
+func UpdatePost(client *iemanjaclient.APIClient, id, title, content string, tags []string) {
+	post := iemanjaclient.NewPostRequest{
 		Title:   title,
 		Content: content,
 		Tags:    tags,
@@ -54,7 +54,7 @@ func UpdatePost(client *third_party.APIClient, id, title, content string, tags [
 	fmt.Printf("Post updated successfully:\n\nID: %s,\nTitle: %s\n", response.Post.ID, response.Post.Title)
 }
 
-func DeletePost(client *third_party.APIClient, id string) {
+func DeletePost(client *iemanjaclient.APIClient, id string) {
 	err := client.DeletePost(id)
 	if err != nil {
 		log.Fatalf("Error deleting post: %v", err)
@@ -62,7 +62,7 @@ func DeletePost(client *third_party.APIClient, id string) {
 	fmt.Printf("Post deleted successfully:\n\nID: %s\n", id)
 }
 
-func ListTags(client *third_party.APIClient, limit, offset int) {
+func ListTags(client *iemanjaclient.APIClient, limit, offset int) {
 	tags, err := client.ListTags(limit, offset)
 	if err != nil {
 		log.Fatalf("Error listing tags: %v", err)
@@ -73,8 +73,8 @@ func ListTags(client *third_party.APIClient, limit, offset int) {
 	}
 }
 
-func CreateTag(client *third_party.APIClient, name string) {
-	tag := third_party.NewTagRequest{Name: name}
+func CreateTag(client *iemanjaclient.APIClient, name string) {
+	tag := iemanjaclient.NewTagRequest{Name: name}
 	response, err := client.CreateTag(tag)
 	if err != nil {
 		log.Fatalf("Error creating tag: %v", err)
@@ -82,7 +82,7 @@ func CreateTag(client *third_party.APIClient, name string) {
 	fmt.Printf("Tag created successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
 }
 
-func GetTag(client *third_party.APIClient, id string) {
+func GetTag(client *iemanjaclient.APIClient, id string) {
 	response, err := client.GetTag(id)
 	if err != nil {
 		log.Fatalf("Error getting tag: %v", err)
@@ -90,8 +90,8 @@ func GetTag(client *third_party.APIClient, id string) {
 	fmt.Printf("Tag retrieved successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
 }
 
-func UpdateTag(client *third_party.APIClient, id, name string) {
-	tag := third_party.NewTagRequest{Name: name}
+func UpdateTag(client *iemanjaclient.APIClient, id, name string) {
+	tag := iemanjaclient.NewTagRequest{Name: name}
 	response, err := client.UpdateTag(id, tag)
 	if err != nil {
 		log.Fatalf("Error updating tag: %v", err)
@@ -99,7 +99,7 @@ func UpdateTag(client *third_party.APIClient, id, name string) {
 	fmt.Printf("Tag updated successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
 }
 
-func DeleteTag(client *third_party.APIClient, id string) {
+func DeleteTag(client *iemanjaclient.APIClient, id string) {
 	err := client.DeleteTag(id)
 	if err != nil {
 		log.Fatalf("Error deleting tag: %v", err)

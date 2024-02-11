@@ -1,4 +1,4 @@
-package third_party
+package iemanjaclient
 
 import (
 	"bytes"
@@ -8,13 +8,11 @@ import (
 	"net"
 	"net/http"
 	"strings"
-
-	"github.com/ugsto/iemanja-cli/model"
 )
 
 type ListPostsResponse struct {
-	Posts []model.Post `json:"posts"`
-	Total int          `json:"total"`
+	Posts []Post `json:"posts"`
+	Total int    `json:"total"`
 }
 
 type NewPostRequest struct {
@@ -24,20 +22,20 @@ type NewPostRequest struct {
 }
 
 type CreatePostResponse struct {
-	Post model.Post `json:"post"`
+	Post Post `json:"post"`
 }
 
 type GetPostResponse struct {
-	Post model.Post `json:"post"`
+	Post Post `json:"post"`
 }
 
 type UpdatePostResponse struct {
-	Post model.Post `json:"post"`
+	Post Post `json:"post"`
 }
 
 type ListTagsResponse struct {
-	Tags  []model.Tag `json:"tags"`
-	Total int         `json:"total"`
+	Tags  []Tag `json:"tags"`
+	Total int   `json:"total"`
 }
 
 type NewTagRequest struct {
@@ -45,15 +43,15 @@ type NewTagRequest struct {
 }
 
 type CreateTagResponse struct {
-	Tag model.Tag `json:"tag"`
+	Tag Tag `json:"tag"`
 }
 
 type GetTagResponse struct {
-	Tag model.Tag `json:"tag"`
+	Tag Tag `json:"tag"`
 }
 
 type UpdateTagResponse struct {
-	Tag model.Tag `json:"tag"`
+	Tag Tag `json:"tag"`
 }
 
 type APIClient struct {
@@ -98,8 +96,8 @@ func (api *APIClient) ListPosts(limit, offset int) (*ListPostsResponse, error) {
 	defer resp.Body.Close()
 
 	var result struct {
-		Posts []model.Post `json:"posts"`
-		Total int          `json:"total"`
+		Posts []Post `json:"posts"`
+		Total int    `json:"total"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
@@ -121,7 +119,7 @@ func (api *APIClient) CreatePost(newpost NewPostRequest) (*CreatePostResponse, e
 	}
 	defer resp.Body.Close()
 
-	var newPost model.Post
+	var newPost Post
 	if err := json.NewDecoder(resp.Body).Decode(&newPost); err != nil {
 		return nil, err
 	}
@@ -137,7 +135,7 @@ func (api *APIClient) GetPost(postID string) (*GetPostResponse, error) {
 	}
 	defer resp.Body.Close()
 
-	var post model.Post
+	var post Post
 	if err := json.NewDecoder(resp.Body).Decode(&post); err != nil {
 		return nil, err
 	}
@@ -164,7 +162,7 @@ func (api *APIClient) UpdatePost(postID string, post NewPostRequest) (*UpdatePos
 	}
 	defer resp.Body.Close()
 
-	var updatedPost model.Post
+	var updatedPost Post
 	if err := json.NewDecoder(resp.Body).Decode(&updatedPost); err != nil {
 		return nil, err
 	}
@@ -197,8 +195,8 @@ func (api *APIClient) ListTags(limit, offset int) (*ListTagsResponse, error) {
 	defer resp.Body.Close()
 
 	var result struct {
-		Tags  []model.Tag `json:"tags"`
-		Total int         `json:"total"`
+		Tags  []Tag `json:"tags"`
+		Total int   `json:"total"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
@@ -220,7 +218,7 @@ func (api *APIClient) CreateTag(newtag NewTagRequest) (*CreateTagResponse, error
 	}
 	defer resp.Body.Close()
 
-	var newTag model.Tag
+	var newTag Tag
 	if err := json.NewDecoder(resp.Body).Decode(&newTag); err != nil {
 		return nil, err
 	}
@@ -236,7 +234,7 @@ func (api *APIClient) GetTag(tagName string) (*GetTagResponse, error) {
 	}
 	defer resp.Body.Close()
 
-	var tag model.Tag
+	var tag Tag
 	if err := json.NewDecoder(resp.Body).Decode(&tag); err != nil {
 		return nil, err
 	}
@@ -263,7 +261,7 @@ func (api *APIClient) UpdateTag(tagName string, tag NewTagRequest) (*UpdateTagRe
 	}
 	defer resp.Body.Close()
 
-	var updatedTag model.Tag
+	var updatedTag Tag
 	if err := json.NewDecoder(resp.Body).Decode(&updatedTag); err != nil {
 		return nil, err
 	}

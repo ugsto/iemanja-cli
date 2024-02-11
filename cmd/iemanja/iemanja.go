@@ -5,8 +5,8 @@ import (
 
 	"github.com/alecthomas/kong"
 	iemanja "github.com/ugsto/iemanja-cli/pkg/cmd"
+	iemanjaclient "github.com/ugsto/iemanja-cli/pkg/iemanja_client"
 	"github.com/ugsto/iemanja-cli/pkg/postwriter"
-	"github.com/ugsto/iemanja-cli/third_party"
 )
 
 var CLI struct {
@@ -67,7 +67,7 @@ var CLI struct {
 
 func main() {
 	ctx := kong.Parse(&CLI)
-	client := third_party.NewAPIClient(CLI.APIHost)
+	client := iemanjaclient.NewAPIClient(CLI.APIHost)
 
 	switch ctx.Command() {
 	case "write-post":

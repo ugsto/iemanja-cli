@@ -1,7 +1,6 @@
-package third_party
+package iemanjaclient
 
 import (
-	"github.com/ugsto/iemanja-cli/model"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -23,12 +22,12 @@ func TestListPosts(t *testing.T) {
 	}
 
 	expected := ListPostsResponse{
-		Posts: []model.Post{
+		Posts: []Post{
 			{
 				ID:      "ifsppovu4c4ehwa553m3",
 				Title:   "Post title",
 				Content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-				Tags: []model.Tag{
+				Tags: []Tag{
 					{ID: "wbdqikortur234x3au3b", Name: "javascript"},
 					{ID: "qg6p00dfx2c03pbga4k4", Name: "typescript"},
 				},
@@ -65,11 +64,11 @@ func TestCreatePost(t *testing.T) {
 	}
 
 	expected := CreatePostResponse{
-		Post: model.Post{
+		Post: Post{
 			ID:      "ifsppovu4c4ehwa553m3",
 			Title:   "Post title",
 			Content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-			Tags: []model.Tag{
+			Tags: []Tag{
 				{ID: "wbdqikortur234x3au3b", Name: "javascript"},
 				{ID: "qg6p00dfx2c03pbga4k4", Name: "typescript"},
 			},
@@ -98,11 +97,11 @@ func TestGetPost(t *testing.T) {
 	}
 
 	expected := GetPostResponse{
-		Post: model.Post{
+		Post: Post{
 			ID:      "ifsppovu4c4ehwa553m3",
 			Title:   "Post title",
 			Content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-			Tags: []model.Tag{
+			Tags: []Tag{
 				{ID: "wbdqikortur234x3au3b", Name: "javascript"},
 				{ID: "qg6p00dfx2c03pbga4k4", Name: "typescript"},
 			},
@@ -138,11 +137,11 @@ func TestUpdatePost(t *testing.T) {
 	}
 
 	expected := UpdatePostResponse{
-		Post: model.Post{
+		Post: Post{
 			ID:      "ifsppovu4c4ehwa553m3",
 			Title:   "Post title - changed",
 			Content: "Content Changed",
-			Tags: []model.Tag{
+			Tags: []Tag{
 				{ID: "wbdqikortur234x3au3b", Name: "javascript"},
 				{ID: "qg6p00dfx2c03pbga4k4", Name: "typescript"},
 			},
@@ -185,7 +184,7 @@ func TestListTags(t *testing.T) {
 	}
 
 	expected := ListTagsResponse{
-		Tags: []model.Tag{
+		Tags: []Tag{
 			{ID: "wbdqikortur234x3au3b", Name: "javascript"},
 			{ID: "qg6p00dfx2c03pbga4k4", Name: "typescript"},
 		},
@@ -214,7 +213,7 @@ func TestCreateTag(t *testing.T) {
 	}
 
 	expected := CreateTagResponse{
-		Tag: model.Tag{
+		Tag: Tag{
 			ID:   "wbdqikortur234x3au3b",
 			Name: "javascript",
 		},
@@ -240,7 +239,7 @@ func TestGetTag(t *testing.T) {
 	}
 
 	expected := GetTagResponse{
-		Tag: model.Tag{
+		Tag: Tag{
 			ID:   "wbdqikortur234x3au3b",
 			Name: "javascript",
 		},
@@ -270,7 +269,7 @@ func TestUpdateTag(t *testing.T) {
 	}
 
 	expected := UpdateTagResponse{
-		Tag: model.Tag{
+		Tag: Tag{
 			ID:   "wbdqikortur234x3au3b",
 			Name: "rust",
 		},

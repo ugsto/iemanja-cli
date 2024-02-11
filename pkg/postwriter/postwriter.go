@@ -1,7 +1,6 @@
 package postwriter
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -9,18 +8,16 @@ import (
 	"log"
 
 	iemanja "github.com/ugsto/iemanja-cli/pkg/cmd"
-	"github.com/ugsto/iemanja-cli/third_party"
+	iemanjaclient "github.com/ugsto/iemanja-cli/pkg/iemanja_client"
 	"github.com/ugsto/iemanja-cli/utils"
 )
 
-func WritePost(client *third_party.APIClient, filetype string) {
+func WritePost(client *iemanjaclient.APIClient, filetype string) {
 	content := launchEditor(filetype)
 
 	title := utils.PromptInput("Title: ")
 	tagsStr := utils.PromptInput("Tags: ")
 	tags := parseTags(tagsStr)
-
-	fmt.Println("Writing post... | title: ", title, " | content: ", content, " | tags: ", tags)
 
 	iemanja.CreatePost(client, title, content, tags)
 }
@@ -53,5 +50,5 @@ func launchEditor(filetype string) string {
 }
 
 func parseTags(tagsStr string) []string {
-	return strings.Split(tagsStr, ",")
+	return utils.FilterNotEmpty(strings.Split(tagsStr, ","))
 }

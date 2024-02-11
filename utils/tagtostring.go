@@ -1,8 +1,8 @@
 package utils
 
-import "github.com/ugsto/iemanja-cli/model"
+import iemanjaclient "github.com/ugsto/iemanja-cli/pkg/iemanja_client"
 
-func TagsToString(tags []model.Tag) []string {
+func TagsToString(tags []iemanjaclient.Tag) []string {
 	var tag_strings []string
 	for _, tag := range tags {
 		tag_strings = append(tag_strings, tag.Name)

@@ -2,16 +2,19 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"strings"
 
 	"github.com/alecthomas/kong"
+	iemanja "github.com/ugsto/iemanja-cli/pkg/cmd"
+	"github.com/ugsto/iemanja-cli/pkg/postwriter"
 	"github.com/ugsto/iemanja-cli/third_party"
-	"github.com/ugsto/iemanja-cli/utils"
 )
 
 var CLI struct {
 	APIHost string `help:"API host. Can be an HTTP URL or a Unix socket path." default:"unix:///tmp/iemanja.sock"`
+
+	WritePost struct {
+		FileType string `name:"filetype" default:"md" help:"File type for the post content (default: md)."`
+	} `cmd:"" help:"Write a new post using the default editor."`
 
 	ListPosts struct {
 		Limit  int `short:"l" default:"10" help:"Limit number of posts to retrieve."`
@@ -62,129 +65,33 @@ var CLI struct {
 	} `cmd:"" help:"Delete a tag."`
 }
 
-func ListPosts(client *third_party.APIClient, limit, offset int) {
-	response, err := client.ListPosts(limit, offset)
-	if err != nil {
-		log.Fatalf("Error listing posts: %v", err)
-	}
-	fmt.Printf("Total Posts: %d\n\n", response.Total)
-	for _, post := range response.Posts {
-		fmt.Printf("ID: %s, Title: %s, Tags: %s\n", post.ID, post.Title, strings.Join(utils.TagsToString(post.Tags), "; "))
-	}
-}
-
-func CreatePost(client *third_party.APIClient, title, content string, tags []string) {
-	post := third_party.NewPostRequest{
-		Title:   title,
-		Content: content,
-		Tags:    tags,
-	}
-	response, err := client.CreatePost(post)
-	if err != nil {
-		log.Fatalf("Error creating post: %v", err)
-	}
-	fmt.Printf("Post created successfully:\n\nID: %s,\nTitle: %s\n", response.Post.ID, response.Post.Title)
-}
-
-func GetPost(client *third_party.APIClient, id string) {
-	response, err := client.GetPost(id)
-	if err != nil {
-		log.Fatalf("Error getting post: %v", err)
-	}
-	fmt.Printf("Post retrieved successfully:\n\nID: %s,\nTitle: %s\nContent: %s\nTags: %s\n", response.Post.ID, response.Post.Title, response.Post.Content, strings.Join(utils.TagsToString(response.Post.Tags), "; "))
-}
-
-func UpdatePost(client *third_party.APIClient, id, title, content string, tags []string) {
-	post := third_party.NewPostRequest{
-		Title:   title,
-		Content: content,
-		Tags:    tags,
-	}
-	response, err := client.UpdatePost(id, post)
-	if err != nil {
-		log.Fatalf("Error updating post: %v", err)
-	}
-	fmt.Printf("Post updated successfully:\n\nID: %s,\nTitle: %s\n", response.Post.ID, response.Post.Title)
-}
-
-func DeletePost(client *third_party.APIClient, id string) {
-	err := client.DeletePost(id)
-	if err != nil {
-		log.Fatalf("Error deleting post: %v", err)
-	}
-	fmt.Printf("Post deleted successfully:\n\nID: %s\n", id)
-}
-
-func ListTags(client *third_party.APIClient, limit, offset int) {
-	tags, err := client.ListTags(limit, offset)
-	if err != nil {
-		log.Fatalf("Error listing tags: %v", err)
-	}
-	fmt.Printf("Total Tags: %d\n\n", tags.Total)
-	for _, tag := range tags.Tags {
-		fmt.Printf("ID: %s, Name: %s\n", tag.ID, tag.Name)
-	}
-}
-
-func CreateTag(client *third_party.APIClient, name string) {
-	tag := third_party.NewTagRequest{Name: name}
-	response, err := client.CreateTag(tag)
-	if err != nil {
-		log.Fatalf("Error creating tag: %v", err)
-	}
-	fmt.Printf("Tag created successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
-}
-
-func GetTag(client *third_party.APIClient, id string) {
-	response, err := client.GetTag(id)
-	if err != nil {
-		log.Fatalf("Error getting tag: %v", err)
-	}
-	fmt.Printf("Tag retrieved successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
-}
-
-func UpdateTag(client *third_party.APIClient, id, name string) {
-	tag := third_party.NewTagRequest{Name: name}
-	response, err := client.UpdateTag(id, tag)
-	if err != nil {
-		log.Fatalf("Error updating tag: %v", err)
-	}
-	fmt.Printf("Tag updated successfully:\n\nID: %s,\nName: %s\n", response.Tag.ID, response.Tag.Name)
-}
-
-func DeleteTag(client *third_party.APIClient, id string) {
-	err := client.DeleteTag(id)
-	if err != nil {
-		log.Fatalf("Error deleting tag: %v", err)
-	}
-	fmt.Printf("Tag deleted successfully:\n\nID: %s\n", id)
-}
-
 func main() {
 	ctx := kong.Parse(&CLI)
 	client := third_party.NewAPIClient(CLI.APIHost)
 
 	switch ctx.Command() {
+	case "write-post":
+		postwriter.WritePost(client, CLI.WritePost.FileType)
 	case "list-posts":
-		ListPosts(client, CLI.ListPosts.Limit, CLI.ListPosts.Offset)
+		iemanja.ListPosts(client, CLI.ListPosts.Limit, CLI.ListPosts.Offset)
 	case "create-post":
-		CreatePost(client, CLI.CreatePost.Title, CLI.CreatePost.Content, CLI.CreatePost.Tags)
+		iemanja.CreatePost(client, CLI.CreatePost.Title, CLI.CreatePost.Content, CLI.CreatePost.Tags)
 	case "get-post":
-		GetPost(client, CLI.GetPost.ID)
+		iemanja.GetPost(client, CLI.GetPost.ID)
 	case "update-post":
-		UpdatePost(client, CLI.UpdatePost.ID, CLI.UpdatePost.Title, CLI.UpdatePost.Content, CLI.UpdatePost.Tags)
+		iemanja.UpdatePost(client, CLI.UpdatePost.ID, CLI.UpdatePost.Title, CLI.UpdatePost.Content, CLI.UpdatePost.Tags)
 	case "delete-post":
-		DeletePost(client, CLI.DeletePost.ID)
+		iemanja.DeletePost(client, CLI.DeletePost.ID)
 	case "list-tags":
-		ListTags(client, CLI.ListTags.Limit, CLI.ListTags.Offset)
+		iemanja.ListTags(client, CLI.ListTags.Limit, CLI.ListTags.Offset)
 	case "create-tag":
-		CreateTag(client, CLI.CreateTag.Name)
+		iemanja.CreateTag(client, CLI.CreateTag.Name)
 	case "get-tag":
-		GetTag(client, CLI.GetTag.Name)
+		iemanja.GetTag(client, CLI.GetTag.Name)
 	case "update-tag":
-		UpdateTag(client, CLI.UpdateTag.Name, CLI.UpdateTag.NewName)
+		iemanja.UpdateTag(client, CLI.UpdateTag.Name, CLI.UpdateTag.NewName)
 	case "delete-tag":
-		DeleteTag(client, CLI.DeleteTag.Name)
+		iemanja.DeleteTag(client, CLI.DeleteTag.Name)
 	default:
 		fmt.Println("Command not recognized.")
 	}

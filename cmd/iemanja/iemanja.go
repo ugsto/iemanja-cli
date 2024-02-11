@@ -1,11 +1,13 @@
-package cmd
+package main
 
 import (
 	"fmt"
-	"github.com/ugsto/iemanja-cli/third_party"
-	"github.com/ugsto/iemanja-cli/utils"
 	"log"
 	"strings"
+
+	"github.com/alecthomas/kong"
+	"github.com/ugsto/iemanja-cli/third_party"
+	"github.com/ugsto/iemanja-cli/utils"
 )
 
 var CLI struct {
@@ -156,4 +158,34 @@ func DeleteTag(client *third_party.APIClient, id string) {
 		log.Fatalf("Error deleting tag: %v", err)
 	}
 	fmt.Printf("Tag deleted successfully:\n\nID: %s\n", id)
+}
+
+func main() {
+	ctx := kong.Parse(&CLI)
+	client := third_party.NewAPIClient(CLI.APIHost)
+
+	switch ctx.Command() {
+	case "list-posts":
+		ListPosts(client, CLI.ListPosts.Limit, CLI.ListPosts.Offset)
+	case "create-post":
+		CreatePost(client, CLI.CreatePost.Title, CLI.CreatePost.Content, CLI.CreatePost.Tags)
+	case "get-post":
+		GetPost(client, CLI.GetPost.ID)
+	case "update-post":
+		UpdatePost(client, CLI.UpdatePost.ID, CLI.UpdatePost.Title, CLI.UpdatePost.Content, CLI.UpdatePost.Tags)
+	case "delete-post":
+		DeletePost(client, CLI.DeletePost.ID)
+	case "list-tags":
+		ListTags(client, CLI.ListTags.Limit, CLI.ListTags.Offset)
+	case "create-tag":
+		CreateTag(client, CLI.CreateTag.Name)
+	case "get-tag":
+		GetTag(client, CLI.GetTag.Name)
+	case "update-tag":
+		UpdateTag(client, CLI.UpdateTag.Name, CLI.UpdateTag.NewName)
+	case "delete-tag":
+		DeleteTag(client, CLI.DeleteTag.Name)
+	default:
+		fmt.Println("Command not recognized.")
+	}
 }

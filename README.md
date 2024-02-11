@@ -18,7 +18,7 @@ Iemanja CLI is a command-line interface for managing posts and tags within the I
 To install Iemanja CLI, use the following Go command:
 
 ```bash
-go install github.com/ugsto/iemanja-cli@latest
+go install github.com/ugsto/iemanja-cli/...@latest
 ```
 
 ## Usage

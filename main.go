@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"iemanja/cmd"
-	"iemanja/third_party"
+	"github.com/ugsto/iemanja-cli/cmd"
+	"github.com/ugsto/iemanja-cli/third_party"
 
 	"github.com/alecthomas/kong"
 )

@@ -1,6 +1,6 @@
 package utils
 
-import "iemanja/model"
+import "github.com/ugsto/iemanja-cli/model"
 
 func TagsToString(tags []model.Tag) []string {
 	var tag_strings []string

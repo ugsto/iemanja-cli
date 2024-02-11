@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"iemanja/third_party"
-	"iemanja/utils"
+	"github.com/ugsto/iemanja-cli/third_party"
+	"github.com/ugsto/iemanja-cli/utils"
 	"log"
 	"strings"
 )

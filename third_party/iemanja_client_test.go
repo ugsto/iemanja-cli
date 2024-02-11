@@ -1,7 +1,7 @@
 package third_party
 
 import (
-	"iemanja/model"
+	"github.com/ugsto/iemanja-cli/model"
 	"net/http"
 	"net/http/httptest"
 	"reflect"

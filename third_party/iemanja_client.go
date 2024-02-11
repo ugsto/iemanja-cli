@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"iemanja/model"
+	"github.com/ugsto/iemanja-cli/model"
 	"net/http"
 )
 

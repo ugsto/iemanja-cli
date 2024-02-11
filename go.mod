@@ -1,4 +1,4 @@
-module iemanja
+module github.com/ugsto/iemanja-cli
 
 go 1.21.6
 

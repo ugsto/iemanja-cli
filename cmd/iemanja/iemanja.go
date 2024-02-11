@@ -13,6 +13,7 @@ var CLI struct {
 	APIHost string `help:"API host. Can be an HTTP URL or a Unix socket path." default:"unix:///tmp/iemanja.sock"`
 
 	WritePost struct {
+		ID       string `short:"i" help:"ID of the post to retrieve. If empty, a new post will be created."`
 		FileType string `name:"filetype" default:"md" help:"File type for the post content (default: md)."`
 	} `cmd:"" help:"Write a new post using the default editor."`
 
@@ -71,7 +72,7 @@ func main() {
 
 	switch ctx.Command() {
 	case "write-post":
-		postwriter.WritePost(client, CLI.WritePost.FileType)
+		postwriter.WritePost(client, CLI.WritePost.FileType, &CLI.WritePost.ID)
 	case "list-posts":
 		iemanja.ListPosts(client, CLI.ListPosts.Limit, CLI.ListPosts.Offset)
 	case "create-post":

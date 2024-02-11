@@ -3,6 +3,14 @@
 ![Go](https://img.shields.io/badge/Go-00ADD8.svg?style=flat&logo=Go&logoColor=white)
 [![tests](https://github.com/ugsto/iemanja-cli/actions/workflows/tests.yml/badge.svg)](https://github.com/ugsto/iemanja-cli/actions/workflows/tests.yml)
 
+---
+
+> [!CAUTION]
+> This application is **not** production ready.
+
+> [!WARNING]
+> This application requires [`iemanjad`](https://github.com/ugsto/iemanjad) to be running
+
 Iemanja CLI is a command-line interface for managing posts and tags within the Iemanja application ecosystem. It allows users to perform CRUD operations on posts and tags through simple and intuitive commands.
 
 ## Installation

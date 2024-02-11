@@ -2,89 +2,22 @@ package iemanjaclient
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
-	"net"
 	"net/http"
-	"strings"
 )
 
-type ListPostsResponse struct {
-	Posts []Post `json:"posts"`
-	Total int    `json:"total"`
-}
-
-type NewPostRequest struct {
-	Title   string   `json:"title"`
-	Content string   `json:"content"`
-	Tags    []string `json:"tags"`
-}
-
-type CreatePostResponse struct {
-	Post Post `json:"post"`
-}
-
-type GetPostResponse struct {
-	Post Post `json:"post"`
-}
-
-type UpdatePostResponse struct {
-	Post Post `json:"post"`
-}
-
-type ListTagsResponse struct {
-	Tags  []Tag `json:"tags"`
-	Total int   `json:"total"`
-}
-
-type NewTagRequest struct {
-	Name string `json:"name"`
-}
-
-type CreateTagResponse struct {
-	Tag Tag `json:"tag"`
-}
-
-type GetTagResponse struct {
-	Tag Tag `json:"tag"`
-}
-
-type UpdateTagResponse struct {
-	Tag Tag `json:"tag"`
-}
-
-type APIClient struct {
-	client  *http.Client
-	baseURL string
-}
-
-func NewAPIClient(baseURL string) *APIClient {
-	if strings.HasPrefix(baseURL, "unix") {
-		socketPath := strings.TrimPrefix(baseURL, "unix://")
-		return NewUnixApiClient(socketPath)
+func handleAPIError(resp *http.Response) error {
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+		return nil
 	}
-	return NewTcpAPIClient(baseURL)
-}
 
-func NewTcpAPIClient(baseURL string) *APIClient {
-	return &APIClient{
-		client:  &http.Client{},
-		baseURL: baseURL,
+	var apiErr APIError
+	if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
+		return fmt.Errorf("API request failed with status code %d", resp.StatusCode)
 	}
-}
 
-func NewUnixApiClient(unixSocketPath string) *APIClient {
-	return &APIClient{
-		client: &http.Client{
-			Transport: &http.Transport{
-				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
-					return net.Dial("unix", unixSocketPath)
-				},
-			},
-		},
-		baseURL: "http://unix",
-	}
+	return fmt.Errorf("API error: %s", apiErr.Error)
 }
 
 func (api *APIClient) ListPosts(limit, offset int) (*ListPostsResponse, error) {
@@ -94,6 +27,10 @@ func (api *APIClient) ListPosts(limit, offset int) (*ListPostsResponse, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if err := handleAPIError(resp); err != nil {
+		return nil, err
+	}
 
 	var result struct {
 		Posts []Post `json:"posts"`
@@ -119,6 +56,10 @@ func (api *APIClient) CreatePost(newpost NewPostRequest) (*CreatePostResponse, e
 	}
 	defer resp.Body.Close()
 
+	if err := handleAPIError(resp); err != nil {
+		return nil, err
+	}
+
 	var newPost Post
 	if err := json.NewDecoder(resp.Body).Decode(&newPost); err != nil {
 		return nil, err
@@ -134,6 +75,10 @@ func (api *APIClient) GetPost(postID string) (*GetPostResponse, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if err := handleAPIError(resp); err != nil {
+		return nil, err
+	}
 
 	var post Post
 	if err := json.NewDecoder(resp.Body).Decode(&post); err != nil {
@@ -162,6 +107,10 @@ func (api *APIClient) UpdatePost(postID string, post NewPostRequest) (*UpdatePos
 	}
 	defer resp.Body.Close()
 
+	if err := handleAPIError(resp); err != nil {
+		return nil, err
+	}
+
 	var updatedPost Post
 	if err := json.NewDecoder(resp.Body).Decode(&updatedPost); err != nil {
 		return nil, err
@@ -183,6 +132,10 @@ func (api *APIClient) DeletePost(postID string) error {
 	}
 	defer resp.Body.Close()
 
+	if err := handleAPIError(resp); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -193,6 +146,10 @@ func (api *APIClient) ListTags(limit, offset int) (*ListTagsResponse, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if err := handleAPIError(resp); err != nil {
+		return nil, err
+	}
 
 	var result struct {
 		Tags  []Tag `json:"tags"`
@@ -218,6 +175,10 @@ func (api *APIClient) CreateTag(newtag NewTagRequest) (*CreateTagResponse, error
 	}
 	defer resp.Body.Close()
 
+	if err := handleAPIError(resp); err != nil {
+		return nil, err
+	}
+
 	var newTag Tag
 	if err := json.NewDecoder(resp.Body).Decode(&newTag); err != nil {
 		return nil, err
@@ -233,6 +194,10 @@ func (api *APIClient) GetTag(tagName string) (*GetTagResponse, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if err := handleAPIError(resp); err != nil {
+		return nil, err
+	}
 
 	var tag Tag
 	if err := json.NewDecoder(resp.Body).Decode(&tag); err != nil {
@@ -261,6 +226,10 @@ func (api *APIClient) UpdateTag(tagName string, tag NewTagRequest) (*UpdateTagRe
 	}
 	defer resp.Body.Close()
 
+	if err := handleAPIError(resp); err != nil {
+		return nil, err
+	}
+
 	var updatedTag Tag
 	if err := json.NewDecoder(resp.Body).Decode(&updatedTag); err != nil {
 		return nil, err
@@ -281,6 +250,10 @@ func (api *APIClient) DeleteTag(tagName string) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	if err := handleAPIError(resp); err != nil {
+		return err
+	}
 
 	return nil
 }
